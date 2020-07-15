@@ -13,9 +13,6 @@ namespace The_Snake_Game
 {
     public partial class Game : Form
     {
-        int horVelocity;
-        int verVelocity;
-        int step = 20;
 
         Area area = new Area();
         Snake snake = new Snake();
@@ -25,6 +22,7 @@ namespace The_Snake_Game
         {
             InitializeComponent();
             InitializeGame();
+            InitializeTimer();
         }
 
         private void InitializeGame()
@@ -36,12 +34,55 @@ namespace The_Snake_Game
             area.Left = 100;
 
             snake.Render(this);
+
+            this.KeyDown += new KeyEventHandler(Game_keydown);
+        }
+
+        private void InitializeTimer()
+        {
+            mainTimer.Interval = 500;
+            mainTimer.Tick += new EventHandler(mainTimer_Tick);
+            mainTimer.Start();
         }
 
         private void mainTimer_Tick(object sender, EventArgs e)
         {
-            mainTimer.Interval = 500;
-            mainTimer.Tick += new EventHandler(mainTimer_Tick);
+            snake.Move();
+        }
+        
+        private void Game_keydown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.Right:
+                    if (snake.HorizontalVelocity != -1)
+                    {
+                        snake.HorizontalVelocity = 1;
+                    }
+                    snake.VerticalVelocity = 0;
+                    break;
+                case Keys.Left:
+                    if (snake.HorizontalVelocity != 1)
+                    {
+                        snake.HorizontalVelocity = -1;
+                    }
+                    snake.VerticalVelocity = 0;
+                    break;
+                case Keys.Down:
+                    snake.HorizontalVelocity = 0;
+                    if (snake.VerticalVelocity != -1)
+                    {
+                        snake.VerticalVelocity = 1;
+                    }
+                    break;
+                case Keys.Up:
+                    snake.HorizontalVelocity = 0;
+                    if (snake.VerticalVelocity != 1)
+                    {
+                        snake.VerticalVelocity = -1;
+                    }
+                    break;
+            }
         }
     }
 }
